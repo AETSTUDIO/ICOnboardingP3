@@ -1,0 +1,150 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Products</h2>
+<div data-bind="with: addProductViewModel">
+    @Html.Partial("_AddProductModal")
+</div>
+
+<div>
+    <table id="products" data-bind="with: productListViewModel" class="table table-light table-hover">
+        <thead>
+            <tr>
+                <th style="display: none">Id</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Action(Edit)</th>
+                <th>Action(Delete)</th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: products">
+            <tr>
+                <td style="display:none" data-bind="text: id "></td>
+                <td data-bind="text: name"></td>
+                <td data-bind="text: price"></td>
+                <td><button id="editProduct" data-bind="click:$parent.selectProduct" class="btn btn-warning" type="button" data-toggle="modal" data-target="#editProductModal"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</button></td>
+                <td><button id="deleteProduct" data-bind="click: $parent.selectProduct" class="btn btn-danger" type="button" data-toggle="modal" data-target="#deleteProductModal"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</button></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div data-bind="with: productListViewModel">
+    @Html.Partial("_DeleteProductModal")
+</div>
+<div data-bind="with: productListViewModel">
+    @Html.Partial("_EditProductModal")
+</div>
+
+@section scripts
+{
+    <script>
+
+        $(document).ready(function () {
+            function Product(id, name, price) {
+                var self = this;
+
+                self.id = ko.observable(id);
+                self.name = ko.observable(name);
+                self.price = ko.observable(price);
+
+                self.addProduct = function () {
+                    var newProduct = ko.toJSON(this);
+                    $.ajax({
+                        url: "/api/products",
+                        method: "POST",
+                        data: newProduct,
+                        contentType: "application/json",
+                        success: function (data) {
+                            productViewModel.productListViewModel.products.push(new Product(data.id, data.name, data.price));
+                            self.id(null);
+                            self.name('');
+                            self.price('');
+                            $("#newProductModal").modal("hide");
+                            location.reload(true);
+                        }
+                    });
+                };
+            }
+
+
+            function ProductList(products) {
+
+                var self = this;
+
+                self.products = ko.observableArray([]);
+
+                self.getProducts = function () {
+                    self.products.removeAll();
+                    $.getJSON("/api/products", function (data) {
+                        self.products(data);
+                    });
+                };
+
+                self.selectedProduct = ko.observable();
+
+                self.selectProduct = function (product) {
+                    self.selectedProduct(product);
+                }
+
+                self.deleteProduct = function () {
+                    var id = self.selectedProduct().id;
+                    $.ajax({
+                        url: "/api/products/" + id,
+                        method: "DELETE",
+                        contentType: 'application/json',
+                        success: function () {
+                            $("#deleteProductModal").modal("hide");
+                            location.reload(true);
+                        },
+                        error: function (xhr) {
+                            alert(xhr.responseText);
+                        }
+                    });
+
+                };
+
+                self.editProduct = function () {
+                    var id = self.selectedProduct().id;
+                    var name = self.selectedProduct().name;
+                    var price = self.selectedProduct().price;
+                    var editedProduct = { name, price };
+
+                    $.ajax({
+                        url: "/api/products/" + id,
+                        method: "PUT",
+                        data: ko.toJSON(editedProduct),
+                        contentType: "application/json",
+                        processData: true,
+                        success: function () {
+                            $("#editProductModal").modal("hide");
+                            location.reload(true);
+                        },
+                        error: function (xhr) {
+                            alert(xhr.responseText);
+                        }
+                    });
+                };
+            };
+
+            var productViewModel = {
+                addProductViewModel: new Product(),
+                productListViewModel: new ProductList()
+            };
+            ko.applyBindings(productViewModel);
+            productViewModel.productListViewModel.getProducts();
+        });
+
+    </script>
+
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+
+
+
+
+

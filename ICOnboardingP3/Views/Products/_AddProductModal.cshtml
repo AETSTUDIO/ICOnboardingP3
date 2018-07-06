@@ -1,0 +1,44 @@
+﻿<section>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newProductModal">
+        Add New Product
+    </button>
+
+    @*Add new product modal*@
+    <div class="modal fade" id="newProductModal" tabindex="-1" role="dialog" aria-labelledby="newProductModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newProductModalLabel">Add New Product</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="newProductForm">
+                        <div class="form-group">
+                            <label for="NewProductName">Name</label>
+                            <input data-bind="value: name, valueUpdate:'keyup'" class="form-control" id="newProductName" placeholder="Please Enter Product Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="newProductPrice">Price</label>
+                            <input data-bind="value: price, valueUpdate:'keyup'" class="form-control" id="newProductPrice" placeholder="Please Enter Product Price">
+                        </div>
+                        <div>
+                            <p>The new Product's Name is <strong data-bind="text: name"></strong>,</p>
+                            <p>The new Product's Price is <strong data-bind="text: price"></strong>.</p>
+                        </div>
+                        <div id="message"></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button data-bind="click: addProduct" class="btn btn-success" id="newProductSubmit">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+

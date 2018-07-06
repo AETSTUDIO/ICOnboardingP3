@@ -163,8 +163,10 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\Api\CustomersController.cs" />
+    <Compile Include="Controllers\Api\ProductsController.cs" />
     <Compile Include="Controllers\CustomersController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -315,6 +317,10 @@
     <Content Include="Views\Customers\_AddCustomerModal.cshtml" />
     <Content Include="Views\Customers\_DeleteCustomerModal.cshtml" />
     <Content Include="Views\Customers\_EditCustomerModal.cshtml" />
+    <Content Include="Views\Products\Index.cshtml" />
+    <Content Include="Views\Products\_EditProductModal.cshtml" />
+    <Content Include="Views\Products\_DeleteProductModal.cshtml" />
+    <Content Include="Views\Products\_AddProductModal.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

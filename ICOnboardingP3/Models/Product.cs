@@ -11,6 +11,7 @@ namespace ICOnboardingP3.Models
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     
     public partial class Product
     {
@@ -21,7 +22,13 @@ namespace ICOnboardingP3.Models
         }
     
         public int Id { get; set; }
+
+        [Required]
+        [StringLength(100)]
         public string Name { get; set; }
+
+        [Required]
+        [Range(0.01, 99999.00)]
         public decimal Price { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
