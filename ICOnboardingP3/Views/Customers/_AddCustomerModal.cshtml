@@ -1,0 +1,75 @@
+﻿<section>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newCustomerModal">
+        Add New Customer
+    </button>
+
+    @*Add new customer modal*@
+    <div class="modal fade" id="newCustomerModal" tabindex="-1" role="dialog" aria-labelledby="newCustomerModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newCustomerModalLabel">Add New Customer</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="newCustomerForm">
+                        <div class="form-group">
+                            <label for="NewCustomerName">Name</label>
+                            <input data-bind="value: name, valueUpdate:'keyup'" class="form-control" id="newCustomerName" placeholder="Please Enter Your Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="newCustomerAddress">Address</label>
+                            <input data-bind="value: address, valueUpdate:'keyup'" class="form-control" id="newCustomerAddress" placeholder="Please Enter Your Address">
+                        </div>
+                        <div>
+                            <p>The new Customer's Name is <strong data-bind="text: name"></strong>,</p>
+                            <p>The new Customer's Address is <strong data-bind="text: address"></strong>.</p>
+                        </div>
+                        <div id="message"></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button data-bind= "click: addCustomer" class="btn btn-success" id="newCustomerSubmit">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+@*Edit Customer Modal*@
+@*<div class="modal fade" id="editCustomerModal" tabindex="-1" role="dialog" aria-labelledby="editCustomerModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editCustomerModalLabel">Edit Customer</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h4>Customer Details</h4>
+                <form id="editCustomerForm">
+                    <div class="form-group">
+                        <label for="customerName">Name</label>
+                        <input type="text" class="form-control" id="customerName">
+                    </div>
+                    <div class="form-group">
+                        <label for="customerAddress">Address</label>
+                        <input type="text" class="form-control" id="customerAddress">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="editCustomerSubmit">Save</button>
+            </div>
+        </div>
+    </div>
+</div>*@
+

@@ -11,9 +11,9 @@ namespace ICOnboardingP3
             bundles.Add(new ScriptBundle("~/bundles/lib").Include(
                 "~/Scripts/bootstrap.js",
                 "~/Scripts/jquery-{version}.js",
-                "~/Scripts/DataTables/jquery.dataTables.js",
-                "~/Scripts/DataTables/dataTables.bootstrap4.js",
-                "~/Scripts/moment.min.js"
+                "~/Scripts/moment.min.js",
+                "~/Scripts/knockout-3.4.2.js",
+                "~/Scripts/knockout.mapping-lastest.js"
                 ));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
@@ -26,10 +26,8 @@ namespace ICOnboardingP3
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
-                      "~/Content/css/dataTables.bootstrap4.css",
                       "~/Content/font-awesome.css",
                       "~/Content/site.css"
-
                       ));
         }
     }

@@ -1,0 +1,28 @@
+﻿@*Delete Customer Confirmation Modal*@
+<div class="modal fade" id="deleteCustomerModal" tabindex="-1" role="dialog" aria-labelledby="deleteCustomerModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="DeleteCustomerModalLabel">Delete Customer</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" data-bind="with:selectedCustomer">
+                    <p>Do you want to delete this customer?</p>
+                    <ul>
+                        <li>
+                            <strong>Name: <span data-bind="text:$data.name"></span></strong>
+                        </li>
+                        <li>
+                            <strong>Address: <span data-bind="text:$data.address"></span></strong>
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal">No</button>
+                    <button data-bind="click: deleteCustomer" class="btn btn-danger" id="deleteCustomerSubmit">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>

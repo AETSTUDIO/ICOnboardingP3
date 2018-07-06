@@ -9,7 +9,7 @@ namespace ICOnboardingP3.Controllers
 {
     public class CustomersController : Controller
     {
-        private OnboardingP3Entities db;
+        private readonly OnboardingP3Entities db;
 
         public CustomersController() {
             db = new OnboardingP3Entities();
@@ -17,8 +17,7 @@ namespace ICOnboardingP3.Controllers
         // GET: Customers
         public ViewResult Index()
         {
-            var customers = db.Customers.ToList();
-            return View(customers);
+            return View();
         }
     }
 }
