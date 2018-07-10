@@ -1,0 +1,145 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Stores</h2>
+
+<div data-bind="with: addStoreViewModel">
+    @Html.Partial("_AddStoreModal")
+</div>
+
+<div>
+    <table id="stores" data-bind="with: storeListViewModel" class="table table-light table-hover">
+        <thead>
+            <tr>
+                <th style="display: none">Id</th>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Action(Edit)</th>
+                <th>Action(Delete)</th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: stores">
+            <tr>
+                <td style="display:none" data-bind="text: id "></td>
+                <td data-bind="text: name"></td>
+                <td data-bind="text: address"></td>
+                <td><button id="editStore" data-bind="click:$parent.selectStore" class="btn btn-warning" type="button" data-toggle="modal" data-target="#editStoreModal"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</button></td>
+                <td><button id="deleteStore" data-bind="click: $parent.selectStore" class="btn btn-danger" type="button" data-toggle="modal" data-target="#deleteStoreModal"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</button></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div data-bind="with: storeListViewModel">
+    @Html.Partial("_DeleteStoreModal")
+</div>
+<div data-bind="with: storeListViewModel">
+    @Html.Partial("_EditStoreModal")
+</div>
+
+@section scripts
+{
+    <script>
+
+        $(document).ready(function () {
+            function Store(id, name, address) {
+                var self = this;
+
+                self.id = ko.observable(id);
+                self.name = ko.observable(name);
+                self.address = ko.observable(address);
+
+                self.addStore = function () {
+                    var newStore = ko.toJSON(this);
+                    $.ajax({
+                        url: "/api/stores",
+                        method: "POST",
+                        data: newStore,
+                        contentType: "application/json",
+                        success: function (data) {
+                            storeViewModel.storeListViewModel.stores.push(new Store(data.id, data.name, data.address));
+                            self.id(null);
+                            self.name('');
+                            self.address('');
+                            $("#newStoreModal").modal("hide");
+                            location.reload(true);
+                        }
+                    });
+                };
+            }
+
+
+            function StoreList(stores) {
+
+                var self = this;
+
+                self.stores = ko.observableArray([]);
+
+                self.getStores = function () {
+                    self.stores.removeAll();
+                    $.getJSON("/api/stores", function (data) {
+                        self.stores(data);
+                    });
+                };
+
+                self.selectedStore = ko.observable();
+
+                self.selectStore = function (store) {
+                    self.selectedStore(store);
+                }
+
+                self.deleteStore = function () {
+                    var id = self.selectedStore().id;
+                    $.ajax({
+                        url: "/api/stores/" + id,
+                        method: "DELETE",
+                        contentType: 'application/json',
+                        success: function () {
+                            $("#deleteStoreModal").modal("hide");
+                            location.reload(true);
+                        },
+                        error: function (xhr) {
+                            alert(xhr.responseText);
+                        }
+                    });
+
+                };
+
+                self.editStore = function () {
+                    var id = self.selectedStore().id;
+                    var name = self.selectedStore().name;
+                    var address = self.selectedStore().address;
+                    var editedStore = { name, address };
+                    //alert(ko.toJSON(editedStore));
+                    $.ajax({
+                        url: "/api/stores/" + id,
+                        method: "PUT",
+                        data: ko.toJSON(editedStore),
+                        contentType: "application/json",
+                        processData: true,
+                        success: function () {
+                            $("#editStoreModal").modal("hide");
+                            location.reload(true);
+                        },
+                        error: function (xhr) {
+                            alert(xhr.responseText);
+                        }
+                    });
+                };
+            };
+
+            var storeViewModel = {
+                addStoreViewModel: new Store(),
+                storeListViewModel: new StoreList()
+            };
+            ko.applyBindings(storeViewModel);
+            storeViewModel.storeListViewModel.getStores();
+        });
+
+    </script>
+
+    @Scripts.Render("~/bundles/jqueryval")
+}

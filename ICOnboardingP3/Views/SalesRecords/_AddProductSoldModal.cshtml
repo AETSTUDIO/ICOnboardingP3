@@ -1,0 +1,61 @@
+﻿<section>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newProductSoldModal">
+        Add New Sales Record
+    </button>
+
+    @*Add new productSold modal*@
+    <div class="modal fade" id="newProductSoldModal" tabindex="-1" role="dialog" aria-labelledby="newProductSoldModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newProductSoldModalLabel">Add New Sales Record</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="newProductSoldForm">
+                        <div class="form-group">
+                            <label for="NewProductSoldCustomerName">Customer Name</label>
+                            <select class ="form-control" id="NewProductSoldCustomerName" data-bind="
+                                    options: customerList(),
+                                    optionsText: 'name',
+                                    value: newCustomer,
+                                    optionsCaption: 'Please select a customer'">
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="newProductSoldProductName">Product Name</label>
+                            <select class ="form-control" id="NewProductSoldProductName" data-bind="
+                                    options: productList(),
+                                    optionsText: 'name',
+                                    value: newProduct,
+                                    optionsCaption:'Please select a product'">
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="newProductSoldStoreName">Store Name</label>
+                            <select class ="form-control" id="NewProductSoldStoreName" data-bind="
+                                    options: storeList(),
+                                    optionsText: 'name',
+                                    value: newStore,
+                                    optionsCaption:'Please select a store'">
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="newProductSoldDate">Date Sold</label>
+                            <input data-bind="value: newDateSold, valueUpdate:'keyup'" class="form-control" id="newProductSoldDate" placeholder="Please Enter Product Sold Date">
+                        </div> 
+                        <div id="message"></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button data-bind="click: addProductSold" class="btn btn-success" id="newProductSoldSubmit">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+

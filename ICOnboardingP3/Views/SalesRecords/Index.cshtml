@@ -1,0 +1,209 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Sales Records</h2>
+
+<div data-bind="with: addProductSoldViewModel">
+    @Html.Partial("_AddProductSoldModal")
+</div>
+
+<div>
+    <table id="productSolds" data-bind="with: productSoldListViewModel" class="table table-light table-hover">
+        <thead>
+            <tr>
+                <th style="display: none">Id</th>
+                <th>Customer Name</th>
+                <th>Product Name</th>
+                <th>Store Name</th>
+                <th>Date Sold</th>
+                <th>Action(Edit)</th>
+                <th>Action(Delete)</th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: productSolds">
+            <tr>
+                <td style="display:none" data-bind="text: id "></td>
+                <td data-bind="text: customer.name"></td>
+                <td data-bind="text: product.name"></td>
+                <td data-bind="text: store.name"></td>
+                <td data-bind="text: moment(dateSold).format('DD/MM/YYYY')"></td>
+                <td><button id="editProductSold" data-bind="click:$parent.selectProductSold" class="btn btn-warning" type="button" data-toggle="modal" data-target="#editProductSoldModal"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</button></td>
+                <td><button id="deleteProductSold" data-bind="click: $parent.selectProductSold" class="btn btn-danger" type="button" data-toggle="modal" data-target="#deleteProductSoldModal"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</button></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div data-bind="with: productSoldListViewModel">
+    @Html.Partial("_DeleteProductSoldModal")
+</div>
+<div data-bind="with: productSoldListViewModel">
+    @Html.Partial("_EditProductSoldModal")
+</div>
+
+@section scripts
+{
+    <script>
+
+        $(document).ready(function () {
+
+            function ProductSold(id, customerId, productId, storeId, dateSold, customer, product, store) {
+                var self = this;
+
+                self.id = ko.observable(id);
+                self.customerId = ko.observable(customerId);
+                self.productId = ko.observable(productId);
+                self.storeId = ko.observable(storeId);
+                self.dateSold = ko.observable(dateSold);
+                self.customer = ko.observable(customer);
+                self.product = ko.observable(product);
+                self.store = ko.observable(store);
+
+                //Populate Selection Lists
+                self.customerList = ko.observableArray();
+                self.storeList = ko.observableArray();
+                self.productList = ko.observableArray();
+
+                $.getJSON("/api/customers", function (data) {
+                    self.customerList(data);
+                });
+
+                $.getJSON("/api/products", function (data) {
+                    self.productList(data);
+                });
+
+                $.getJSON("/api/stores", function (data) {
+                    self.storeList(data);
+                });
+
+                self.newCustomer = ko.observable();
+                self.newProduct = ko.observable();
+                self.newStore = ko.observable();
+                self.newDateSold = ko.observable();
+
+                //Add new sales record
+                self.addProductSold = function () {
+                    var newProductSold = {
+                        "customerId": self.newCustomer().id,
+                        "storeId": self.newStore().id,
+                        "productId": self.newProduct().id,
+                        "dateSold": self.newDateSold()
+                    };
+                    //self.newCustomerId = ko.computed(function () { return self.newCustomer() && self.newCustomer().id;});
+                    $.ajax({
+                        url: "/api/salesrecords",
+                        method: "POST",
+                        data: ko.toJSON(newProductSold),
+                        contentType: "application/json",
+                        success: function (data) {
+                            $("#AddProductSoldModal").modal("hide");
+                            location.reload(true);
+                        },
+                        error: function (xhr) {
+                            alert(xhr.responseText);
+                        }
+                    });
+                };
+            }
+
+
+            function ProductSoldList(productSolds) {
+
+                var self = this;
+
+                self.productSolds = ko.observableArray([]);
+
+                //Populate index with sales records
+                self.getProductSolds = function () {
+                    self.productSolds.removeAll();
+                    $.getJSON("/api/salesrecords", function (data) {
+                        self.productSolds(data);
+                    });
+                };
+
+                self.selectedProductSold = ko.observable();
+
+                self.selectProductSold = function (productSold) {
+                    self.selectedProductSold(productSold);
+
+                }
+
+                //Delete selected sales record
+                self.deleteProductSold = function () {
+                    var id = self.selectedProductSold().id;
+                    $.ajax({
+                        url: "/api/salesrecords/" + id,
+                        method: "DELETE",
+                        contentType: 'application/json',
+                        success: function () {
+                            $("#deleteProductSoldModal").modal("hide");
+                            location.reload(true);
+                        },
+                        error: function (xhr) {
+                            alert(xhr.responseText);
+                        }
+                    });
+                };
+
+                //Populate Selection Lists
+                self.customerList = ko.observableArray();
+                self.storeList = ko.observableArray();
+                self.productList = ko.observableArray();
+
+                $.getJSON("/api/customers", function (data) {
+                    self.customerList(data);
+                });
+
+                $.getJSON("/api/products", function (data) {
+                    self.productList(data);
+                });
+
+                $.getJSON("/api/stores", function (data) {
+                    self.storeList(data);
+                });
+
+                self.editedCustomer = ko.observable();
+                self.editedProduct = ko.observable();
+                self.editedStore = ko.observable();
+                self.editedDateSold = ko.observable();
+
+                self.editProductSold = function () {
+                    var editedProductSold = {
+                        "customerId": self.editedCustomer().id,
+                        "storeId": self.editedStore().id,
+                        "productId": self.editedProduct().id,
+                        "dateSold": self.editedDateSold()
+                    };
+
+                    $.ajax({
+                        url: "/api/salesrecords/" + self.selectedProductSold().id,
+                        method: "PUT",
+                        data: ko.toJSON(editedProductSold),
+                        contentType: "application/json",
+                        processData: true,
+                        success: function () {
+                            $("#editProductSoldModal").modal("hide");
+                            location.reload(true);
+                        },
+                        error: function (xhr) {
+                            alert(xhr.responseText);
+                        }
+                    });
+                };
+            };
+
+            var productSoldViewModel = {
+                addProductSoldViewModel: new ProductSold(),
+                productSoldListViewModel: new ProductSoldList()
+            };
+            ko.applyBindings(productSoldViewModel);
+            productSoldViewModel.productSoldListViewModel.getProductSolds();
+        });
+
+    </script>
+
+    @Scripts.Render("~/bundles/jqueryval")
+}
+

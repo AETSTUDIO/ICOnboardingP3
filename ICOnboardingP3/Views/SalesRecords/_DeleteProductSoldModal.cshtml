@@ -1,0 +1,35 @@
+﻿@*Delete ProductSold Confirmation Modal*@
+<div class="modal fade" id="deleteProductSoldModal" tabindex="-1" role="dialog" aria-labelledby="deleteProductSoldModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="DeleteProductSoldModalLabel">Delete Sales Record</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" data-bind="with:selectedProductSold">
+                <p>Do you want to delete this sales record?</p>
+                <ul>
+                    <li>
+                        <strong>Customer Name: </strong><span data-bind="text:$data.customer.name"></span>
+                    </li>
+                    <li>
+                        <strong>Product Name: </strong><span data-bind="text:$data.product.name"></span>
+                    </li>
+                    <li>
+                        <strong>Store Name: </strong><span data-bind="text:$data.store.name"></span>
+                    </li>
+                    <li>
+                        <strong>Date Sold: </strong><span data-bind="text:moment($data.dateSold).format('DD/MM/YYYY')"></span>
+                    </li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-dismiss="modal">No</button>
+                <button data-bind="click: deleteProductSold" class="btn btn-danger" id="deleteProductSoldSubmit">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+

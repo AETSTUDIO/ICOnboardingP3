@@ -1,0 +1,42 @@
+﻿<section>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newStoreModal">
+        Add New Store
+    </button>
+
+    @*Add new store modal*@
+    <div class="modal fade" id="newStoreModal" tabindex="-1" role="dialog" aria-labelledby="newStoreModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newStoreModalLabel">Add New Store</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="newStoreForm">
+                        <div class="form-group">
+                            <label for="NewStoreName">Name</label>
+                            <input data-bind="value: name, valueUpdate:'keyup'" class="form-control" id="newStoreName" placeholder="Please Enter Store Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="newStoreAddress">Address</label>
+                            <input data-bind="value: address, valueUpdate:'keyup'" class="form-control" id="newStoreAddress" placeholder="Please Enter Store Address">
+                        </div>
+                        <div>
+                            <p>The new Store's Name is <strong data-bind="text: name"></strong>,</p>
+                            <p>The new Store's Address is <strong data-bind="text: address"></strong>.</p>
+                        </div>
+                        <div id="message"></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button data-bind="click: addStore" class="btn btn-success" id="newStoreSubmit">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+

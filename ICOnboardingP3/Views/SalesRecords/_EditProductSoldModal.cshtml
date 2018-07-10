@@ -1,0 +1,52 @@
+﻿<div class="modal fade" id="editProductSoldModal" role="dialog" tabindex="-1" aria-labelledby="editProductSoldModalLabel" aria-hidden="true">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editProductSoldModalLabel">Edit Sales Record</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label data-bind="with: selectedProductSold" for="NewProductSoldCustomerName"><strong>Customer Name:</strong> <span data-bind="text:$data.customer.name"></span></label>
+                        <select class="form-control" id="NewProductSoldCustomerName" data-bind="
+                                    options: customerList(),
+                                    optionsText: 'name',
+                                    value: editedCustomer,
+                                    optionsCaption: 'Please select a new customer'"></select>
+                    </div>
+                    <div class="form-group">
+                        <label data-bind="with: selectedProductSold" for="newProductSoldProductName"><strong>Product Name: </strong><span data-bind="text:$data.product.name"></span></label>
+                        <select class="form-control" id="NewProductSoldProductName" data-bind="
+                                    options: productList(),
+                                    optionsText: 'name',
+                                    value: editedProduct,
+                                    optionsCaption: 'Please select a new product'"></select>
+                    </div>
+                    <div class="form-group">
+                        <label data-bind="with: selectedProductSold" for="newProductSoldStoreName"><strong>Store Name: </strong><span data-bind="text:$data.store.name"></span></label>
+                        <select class="form-control" id="NewProductSoldStoreName" data-bind="
+                                    options: storeList(),
+                                    optionsText: 'name',
+                                    value: editedStore,
+                                    optionsCaption: 'Please select a new store'"></select>
+                    </div>
+                    <div class="form-group">
+                        <label data-bind="with: selectedProductSold" for="newProductSoldDate"><strong>Date Sold: </strong><span data-bind="text:moment($data.dateSold).format('DD/MM/YYYY')"></span></label>
+                        <input data-bind="value: editedDateSold, valueUpdate:'keyup', attr: {placeholder: 'Please enter a new sold date'}" class="form-control" id="newProductSoldDate">
+                    </div>
+                    <div id="message"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                <button data-bind="click:editProductSold" class="btn btn-success">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+

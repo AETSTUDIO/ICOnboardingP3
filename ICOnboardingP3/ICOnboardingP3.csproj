@@ -164,9 +164,13 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\Api\CustomersController.cs" />
     <Compile Include="Controllers\Api\ProductsController.cs" />
+    <Compile Include="Controllers\Api\SalesRecordsController.cs" />
+    <Compile Include="Controllers\Api\StoresController.cs" />
     <Compile Include="Controllers\CustomersController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
+    <Compile Include="Controllers\SalesRecordsController.cs" />
+    <Compile Include="Controllers\StoresController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -321,6 +325,14 @@
     <Content Include="Views\Products\_EditProductModal.cshtml" />
     <Content Include="Views\Products\_DeleteProductModal.cshtml" />
     <Content Include="Views\Products\_AddProductModal.cshtml" />
+    <Content Include="Views\Stores\Index.cshtml" />
+    <Content Include="Views\Stores\_AddStoreModal.cshtml" />
+    <Content Include="Views\Stores\_DeleteStoreModal.cshtml" />
+    <Content Include="Views\Stores\_EditStoreModal.cshtml" />
+    <Content Include="Views\SalesRecords\Index.cshtml" />
+    <Content Include="Views\SalesRecords\_AddProductSoldModal.cshtml" />
+    <Content Include="Views\SalesRecords\_DeleteProductSoldModal.cshtml" />
+    <Content Include="Views\SalesRecords\_EditProductSoldModal.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
