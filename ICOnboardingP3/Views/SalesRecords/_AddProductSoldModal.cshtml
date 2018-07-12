@@ -14,38 +14,41 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <div id="addModalMessage" style="display: none" class="text-danger">
+                        Please fix below <strong data-bind="text: errors().length"></strong> errors
+                    </div>
                     <form id="newProductSoldForm">
                         <div class="form-group">
                             <label for="NewProductSoldCustomerName">Customer Name</label>
-                            <select class ="form-control" id="NewProductSoldCustomerName" data-bind="
+                            <select class="form-control" id="NewProductSoldCustomerName" data-bind="
                                     options: customerList(),
                                     optionsText: 'name',
-                                    value: newCustomer,
-                                    optionsCaption: 'Please select a customer'">
-                            </select>
+                                    optionsValue: 'id',
+                                    value: customerId,
+                                    optionsCaption: 'Please select a customer'"></select>
                         </div>
                         <div class="form-group">
                             <label for="newProductSoldProductName">Product Name</label>
-                            <select class ="form-control" id="NewProductSoldProductName" data-bind="
+                            <select class="form-control" id="NewProductSoldProductName" data-bind="
                                     options: productList(),
                                     optionsText: 'name',
-                                    value: newProduct,
-                                    optionsCaption:'Please select a product'">
-                            </select>
+                                    optionsValue: 'id',
+                                    value: productId,
+                                    optionsCaption:'Please select a product'"></select>
                         </div>
                         <div class="form-group">
                             <label for="newProductSoldStoreName">Store Name</label>
-                            <select class ="form-control" id="NewProductSoldStoreName" data-bind="
+                            <select class="form-control" id="NewProductSoldStoreName" data-bind="
                                     options: storeList(),
                                     optionsText: 'name',
-                                    value: newStore,
-                                    optionsCaption:'Please select a store'">
-                            </select>
+                                    optionsValue: 'id',
+                                    value: storeId,
+                                    optionsCaption:'Please select a store'"></select>
                         </div>
                         <div class="form-group">
                             <label for="newProductSoldDate">Date Sold</label>
-                            <input data-bind="value: newDateSold, valueUpdate:'keyup'" class="form-control" id="newProductSoldDate" placeholder="Please Enter Product Sold Date">
-                        </div> 
+                            <input type="date" data-bind="date: dateSold, dateFormat: 'YYYY-MM-DD', value: dateSold, valueUpdate:'keyup'" class="form-control" id="newProductSoldDate" placeholder="Please Enter Product Sold Date">
+                        </div>
                         <div id="message"></div>
                     </form>
                 </div>

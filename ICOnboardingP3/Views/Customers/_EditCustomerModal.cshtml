@@ -8,12 +8,14 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body" data-bind="with: selectedCustomer">
-                <form >
+            <div class="modal-body">
+                @*<div id="editModalMessage" style="display: none" class="text-danger">
+                    Please fix below <strong data-bind="text: errors().length"></strong> errors
+                </div>*@
+                <form data-bind="with: customer()">
                     <div class="form-group">
                         <label for="editCustomerName">Name</label>
-                        <input data-bind="value: $data.name, valueUpdate:'keyup'" class="form-control" id="editCustomerName" >
-                        @*<select data-bind="options: $parent.customers, optionsText: 'name', selectedOptions: $data.name" id="editCustomerName"> </select>*@
+                        <input data-bind="value: $data.name, valueUpdate:'keyup'" class="form-control" id="editCustomerName">
                     </div>
                     <div class="form-group">
                         <label for="editCustomerAddress">Address</label>

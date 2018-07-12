@@ -13,7 +13,8 @@ namespace ICOnboardingP3
                 "~/Scripts/jquery-{version}.js",
                 "~/Scripts/moment.min.js",
                 "~/Scripts/knockout-3.4.2.js",
-                "~/Scripts/knockout.mapping-lastest.js"
+                "~/Scripts/knockout.mapping-lastest.js",
+                "~/Scripts/knockout.validation.js"
                 ));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
@@ -25,9 +26,9 @@ namespace ICOnboardingP3
                         "~/Scripts/modernizr-*"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap.css",
-                      "~/Content/font-awesome.css",
-                      "~/Content/site.css"
+                        "~/Content/Site.css",
+                        "~/Content/bootstrap.css",
+                        "~/Content/font-awesome.css"
                       ));
         }
     }

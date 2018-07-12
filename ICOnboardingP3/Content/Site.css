@@ -18,3 +18,16 @@ select,
 textarea {
     max-width: 280px;
 }
+
+/*Validation text colors*/
+label {
+    display: block;
+}
+
+.validationMessage {
+    color: Red;
+}
+
+.customMessage {
+    color: Orange;
+}

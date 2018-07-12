@@ -8,12 +8,11 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body" data-bind="with: selectedProduct">
-                <form>
+            <div class="modal-body">
+                <form data-bind="with: product()">
                     <div class="form-group">
                         <label for="editProductName">Name</label>
                         <input data-bind="value: $data.name, valueUpdate:'keyup'" class="form-control" id="editProductName">
-                        @*<select data-bind="options: $parent.products, optionsText: 'name', selectedOptions: $data.name" id="editProductName"> </select>*@
                     </div>
                     <div class="form-group">
                         <label for="editProductPrice">Price</label>

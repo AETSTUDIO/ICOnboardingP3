@@ -9,36 +9,35 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form>
+                <form data-bind="with: productSold">
                     <div class="form-group">
-                        <label data-bind="with: selectedProductSold" for="NewProductSoldCustomerName"><strong>Customer Name:</strong> <span data-bind="text:$data.customer.name"></span></label>
+                        <label for="NewProductSoldCustomerName"><strong>Customer Name: </strong></label>
                         <select class="form-control" id="NewProductSoldCustomerName" data-bind="
-                                    options: customerList(),
+                                    options: $parent.customerList(),
                                     optionsText: 'name',
-                                    value: editedCustomer,
-                                    optionsCaption: 'Please select a new customer'"></select>
+                                    optionsValue: 'id',
+                                    value: customerId"></select>
                     </div>
                     <div class="form-group">
-                        <label data-bind="with: selectedProductSold" for="newProductSoldProductName"><strong>Product Name: </strong><span data-bind="text:$data.product.name"></span></label>
+                        <label for="newProductSoldProductName"><strong>Product Name: </strong></label>
                         <select class="form-control" id="NewProductSoldProductName" data-bind="
-                                    options: productList(),
+                                    options: $parent.productList(),
                                     optionsText: 'name',
-                                    value: editedProduct,
-                                    optionsCaption: 'Please select a new product'"></select>
+                                    optionsValue: 'id',
+                                    value: productId"></select>
                     </div>
                     <div class="form-group">
-                        <label data-bind="with: selectedProductSold" for="newProductSoldStoreName"><strong>Store Name: </strong><span data-bind="text:$data.store.name"></span></label>
+                        <label for="newProductSoldStoreName"><strong>Store Name: </strong></label>
                         <select class="form-control" id="NewProductSoldStoreName" data-bind="
-                                    options: storeList(),
+                                    options: $parent.storeList(),
                                     optionsText: 'name',
-                                    value: editedStore,
-                                    optionsCaption: 'Please select a new store'"></select>
+                                    optionsValue: 'id',
+                                    value: storeId"></select>
                     </div>
                     <div class="form-group">
-                        <label data-bind="with: selectedProductSold" for="newProductSoldDate"><strong>Date Sold: </strong><span data-bind="text:moment($data.dateSold).format('DD/MM/YYYY')"></span></label>
-                        <input data-bind="value: editedDateSold, valueUpdate:'keyup', attr: {placeholder: 'Please enter a new sold date'}" class="form-control" id="newProductSoldDate">
+                        <label for="newProductSoldDate"><strong>Date Sold: </strong></label>
+                        <input type="date" data-bind="date: dateSold, dateFormat: 'YYYY-MM-DD', value: dateSold, valueUpdate:'keyup'" class="form-control" id="newProductSoldDate">
                     </div>
-                    <div id="message"></div>
                 </form>
             </div>
             <div class="modal-footer">
