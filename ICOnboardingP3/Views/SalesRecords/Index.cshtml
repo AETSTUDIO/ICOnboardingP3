@@ -9,7 +9,7 @@
 </div>
 
 <div>
-    <table id="productSolds" data-bind="productSoldViewModel" class="table table-light table-hover">
+    <table id="productSolds" data-bind="PSViewModel" class="table table-light table-hover">
         <thead>
             <tr>
                 <th style="display: none">Id</th>
@@ -29,7 +29,7 @@
                 <td data-bind="text: store.name"></td>
                 <td data-bind="text: moment(dateSold).format('DD/MM/YYYY')"></td>
                 <td><button id="editProductSold" data-bind="click:$parent.editProductSoldBtn" class="btn btn-warning" type="button" data-toggle="modal" data-target="#editProductSoldModal"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</button></td>
-                <td><button id="deleteProductSold" data-bind="click: $parent.selectProductSold" class="btn btn-danger" type="button" data-toggle="modal" data-target="#deleteProductSoldModal"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</button></td>
+                <td><button id="deleteProductSold" data-bind="click: $parent.deleteProductSoldBtn" class="btn btn-danger" type="button" data-toggle="modal" data-target="#deleteProductSoldModal"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</button></td>
             </tr>
         </tbody>
     </table>
@@ -58,61 +58,62 @@
                 messageTemplate: null
             }, true);
 
-            function productSoldViewModel() {
-                var self = this;
+            function ProductSold(data) {
+                this.id = ko.observable(data.id);
+                this.customerId = ko.observable(data.customerId);
+                this.productId = ko.observable(data.productId);
+                this.storeId = ko.observable(data.storeId);
+                this.dateSold = ko.observable(data.dateSold).extend({ required: { message: 'Please Enter New Date!' } });
+                this.customer = ko.observable(data.customer);
+                this.product = ko.observable(data.product);
+                this.store = ko.observable(data.store);
+            }
 
-                self.id = ko.observable();
-                self.customerId = ko.observable().extend({ required: { message: 'Please Select Customer!' } });
-                self.productId = ko.observable().extend({ required: { message: 'Please Select Product!' } });
-                self.storeId = ko.observable().extend({ required: { message: 'Please Select Store!' } });
-                self.dateSold = ko.observable(new Date()).extend({ required: { message: 'Please Enter Sold Date!' } });
-                self.customer = ko.observable();
-                self.product = ko.observable();
-                self.store = ko.observable();
-                self.errors = ko.validation.group(self, { deep: true });
+            var PSViewModel = {
 
-                var productSold = {
-                    id: self.id,
-                    customerId: self.customerId,
-                    productId: self.productId,
-                    storeId: self.storeId,
-                    dateSold: self.dateSold,
-                    customer: self.customer,
-                    product: self.product,
-                    store: self.store
-                };
+                id: ko.observable(),
+                customerId: ko.observable().extend({ required: { message: 'Please Select Customer!' } }),
+                productId: ko.observable().extend({ required: { message: 'Please Select Product!' } }),
+                storeId: ko.observable().extend({ required: { message: 'Please Select Store!' } }),
+                dateSold: ko.observable().extend({ required: { message: 'Please Enter Date!' } }),
+                customer: ko.observable(),
+                product: ko.observable(),
+                store: ko.observable(),
 
-                self.productSold = ko.observable();
-                self.productSolds = ko.observableArray();
+                productSold: ko.observable(),
+                productSolds: ko.observableArray(),
 
-                $.getJSON("/api/salesrecords", function (data) {
-                    self.productSolds(data);
-                });
+                getAllData: function () {
+                    $.getJSON("/api/salesrecords", function (data) {
+                        $.each(data, function (key, value) {
+                            PSViewModel.productSolds.push(ko.toJS(new ProductSold(value)));
+                        });
+                    });
 
-                self.customerList = ko.observableArray();
-                self.storeList = ko.observableArray();
-                self.productList = ko.observableArray();
+                    $.getJSON("/api/customers", function (data) {
+                        PSViewModel.customerList(data);
+                    });
 
-                $.getJSON("/api/customers", function (data) {
-                    self.customerList(data);
-                });
+                    $.getJSON("/api/products", function (data) {
+                        PSViewModel.productList(data);
+                    });
 
-                $.getJSON("/api/products", function (data) {
-                    self.productList(data);
-                });
+                    $.getJSON("/api/stores", function (data) {
+                        PSViewModel.storeList(data);
+                    });
+                },
 
-                $.getJSON("/api/stores", function (data) {
-                    self.storeList(data);
-                });
+                customerList: ko.observableArray(),
+                storeList: ko.observableArray(),
+                productList: ko.observableArray(),
 
                 //Add new sales record
-                self.addProductSold = function () {
-                    
-                    if (self.errors().length === 0) {
+                addProductSold: function () {
+                    if (PSViewModel.errors().length === 0) {
                         $.ajax({
                             url: "/api/salesrecords",
                             method: "POST",
-                            data: ko.toJSON(productSold),
+                            data: ko.toJSON(this),
                             contentType: "application/json",
                             success: function (data) {
                                 $("#AddProductSoldModal").modal("hide");
@@ -123,20 +124,19 @@
                             }
                         });
                     } else {
-                        self.errors.showAllMessages();
-                        $("#addModalMessage").removeAttr("style");
+                        PSViewModel.errors.showAllMessages();
                     }
-                };
+                },
 
-                self.selectedProductSold = ko.observable();
+                selectedProductSold: ko.observable(),
 
-                self.selectProductSold = function (productSold) {
-                    self.selectedProductSold(productSold);
-                }
+                deleteProductSoldBtn: function (productSold) {
+                    PSViewModel.selectedProductSold(productSold);
+                },
 
                 //Delete selected sales record
-                self.deleteProductSold = function () {
-                    var id = self.selectedProductSold().id;
+                deleteProductSold: function () {
+                    var id = ko.toJS(PSViewModel.selectedProductSold()).id;
                     $.ajax({
                         url: "/api/salesrecords/" + id,
                         method: "DELETE",
@@ -149,65 +149,76 @@
                             alert(xhr.responseText);
                         }
                     });
-                };
+                },
 
                 //Push all data into selection lists where the list top is the edited data
-                self.editProductSoldBtn = function (productSold) {
+                editProductSoldBtn: function (productSold) {
 
-                    self.productSold(productSold);
-                    self.customerList.removeAll();
-                    self.productList.removeAll();
-                    self.storeList.removeAll();
+                    PSViewModel.selectedProductSold(new ProductSold(productSold));
+                    PSViewModel.customerId.rules.remove(function (x) { return x.rule === "required" });
+                    PSViewModel.productId.rules.remove(function (x) { return x.rule === "required" });
+                    PSViewModel.storeId.rules.remove(function (x) { return x.rule === "required" });
+                    PSViewModel.dateSold.rules.remove(function (x) { return x.rule === "required" });
+                    PSViewModel.customerList.removeAll();
+                    PSViewModel.productList.removeAll();
+                    PSViewModel.storeList.removeAll();
 
-                    self.customerList.push(self.productSold().customer);
+                    PSViewModel.customerList.push(ko.toJS(PSViewModel.selectedProductSold()).customer);
                     $.getJSON("/api/customers", function (data) {
                         $.each(data, function (key, customer) {
-                            if (customer.id !== self.productSold().customerId) {
-                                self.customerList.push(customer);
+                            if (customer.id !== PSViewModel.selectedProductSold().customerId) {
+                                PSViewModel.customerList.push(customer);
                             }
                         });
                     });
 
-                    self.productList.push(self.productSold().product);
+                    PSViewModel.productList.push(ko.toJS(PSViewModel.selectedProductSold()).product);
                     $.getJSON("/api/products", function (data) {
                         $.each(data, function (key, product) {
-                            if (product.id !== self.productSold().productId) {
-                                self.productList.push(product);
+                            if (product.id !== PSViewModel.selectedProductSold().productId) {
+                                PSViewModel.productList.push(product);
                             }
                         });
                     });
 
-                    self.storeList.push(self.productSold().store);
+                    PSViewModel.storeList.push(ko.toJS(PSViewModel.selectedProductSold()).store);
                     $.getJSON("/api/stores", function (data) {
                         $.each(data, function (key, store) {
-                            if (store.id !== self.productSold().storeId) {
-                                self.storeList.push(store);
+                            if (store.id !== PSViewModel.selectedProductSold().storeId) {
+                                PSViewModel.storeList.push(store);
                             }
                         });
                     });
-                }
+                },
 
                 //Edit selected sales record
-                self.editProductSold = function () {
-                    $.ajax({
-                        url: "/api/salesrecords/" + self.productSold().id,
-                        method: "PUT",
-                        data: ko.toJSON(self.productSold()),
-                        contentType: "application/json",
-                        processData: true,
-                        success: function () {
-                            $("#editProductSoldModal").modal("hide");
-                            location.reload(true);
-                        },
-                        error: function (xhr) {
-                            alert(xhr.responseText);
-                        }
-                    });
-                };
+                editProductSold: function () {
+                    if (PSViewModel.errors().length == 0) {
+                        var editedProductSold = ko.toJS(PSViewModel.selectedProductSold);
+                        $.ajax({
+                            url: "/api/salesrecords/" + editedProductSold.id,
+                            method: "PUT",
+                            data: ko.toJSON(PSViewModel.selectedProductSold),
+                            contentType: "application/json",
+                            processData: true,
+                            success: function () {
+                                $("#editProductSoldModal").modal("hide");
+                                location.reload(true);
+                            },
+                            error: function (xhr) {
+                                alert(xhr.responseText);
+                            }
+                        });
+                    } else {
+                        PSViewModel.errors.showAllMessages();
+                    }
+                }
             }
 
-            var productSoldViewModel = new productSoldViewModel();
-            ko.applyBindings(productSoldViewModel);
+            PSViewModel.errors = ko.validation.group(PSViewModel, { deep: true });
+
+            ko.applyBindings(PSViewModel);
+            PSViewModel.getAllData();
         });
 
     </script>

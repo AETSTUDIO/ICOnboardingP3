@@ -9,14 +9,14 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form data-bind="with: product()">
+                <form data-bind="with: selectedProduct">
                     <div class="form-group">
                         <label for="editProductName">Name</label>
-                        <input data-bind="value: $data.name, valueUpdate:'keyup'" class="form-control" id="editProductName">
+                        <input data-bind="value: name, valueUpdate:'keyup'" class="form-control" id="editProductName">
                     </div>
                     <div class="form-group">
                         <label for="editProductPrice">Price</label>
-                        <input data-bind="value: $data.price, valueUpdate:'keyup'" class="form-control" id="editProductPrice">
+                        <input data-bind="value: price, valueUpdate:'keyup'" class="form-control" id="editProductPrice">
                     </div>
                 </form>
             </div>

@@ -20,7 +20,7 @@ namespace ICOnboardingP3.Controllers.Api
         //GET api/salesrecords
         public IEnumerable<ProductSold> GetSalesRecords()
         {
-            var productSolds = db.ProductSolds;
+            var productSolds = db.ProductSolds.ToList();
 
             return productSolds;
         }

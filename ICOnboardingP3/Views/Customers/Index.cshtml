@@ -25,7 +25,7 @@
                 <td data-bind="text: name"></td>
                 <td data-bind="text: address"></td>
                 <td><button id="editCustomer" data-bind="click:$parent.editCustomerBtn" class="btn btn-warning" type="button" data-toggle="modal" data-target="#editCustomerModal"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</button></td>
-                <td><button id="deleteCustomer" data-bind="click: $parent.selectCustomer" class="btn btn-danger" type="button" data-toggle="modal" data-target="#deleteCustomerModal"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</button></td>
+                <td><button id="deleteCustomer" data-bind="click: $parent.deleteCustomerBtn" class="btn btn-danger" type="button" data-toggle="modal" data-target="#deleteCustomerModal"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</button></td>
             </tr>
         </tbody>
     </table>
@@ -54,32 +54,32 @@
                 messageTemplate: null
             }, true);
 
+            function Customer(data) {
+                this.id = ko.observable(data.id);
+                this.name = ko.observable(data.name).extend({ required: { message: 'Please Enter New Customer Name!' } });
+                this.address = ko.observable(data.address).extend({ required: { message: 'Please Enter New Customer Address!' } });
+            }
 
-            function customerViewModel() {
-                var self = this;
+            var customerViewModel = {
 
-                self.id = ko.observable();
-                self.name = ko.observable().extend({ required: { message: 'Please Enter Customer Name!' } });
-                self.address = ko.observable().extend({ required: { message: 'Please Enter Customer Address!' } });
-                self.errors = ko.validation.group(self, { deep: true });
+                id: ko.observable(),
+                name: ko.observable().extend({ required: { message: 'Please Enter Customer Name!' } }),
+                address: ko.observable().extend({ required: { message: 'Please Enter Customer Address!' } }),
 
+                customer: ko.observable(),
+                customers: ko.observableArray(),
 
-                var customer = {
-                    id: self.id,
-                    name: self.name,
-                    address: self.address
-                };
+                getCustomers: function () {
+                    $.getJSON("/api/customers", function (data) {
+                        $.each(data, function (key, value) {
+                            customerViewModel.customers.push(new Customer(value));
+                        });
+                    });
+                },
 
-                self.customer = ko.observable();
-                self.customers = ko.observableArray();
+                addCustomer: function () {
 
-                $.getJSON("/api/customers", function (data) {
-                    self.customers(data);
-                });
-
-                self.addCustomer = function () {
-
-                    if (self.errors().length === 0) {
+                    if (customerViewModel.errors().length === 0) {
                         var newCustomer = ko.toJSON(this);
                         $.ajax({
                             url: "/api/customers",
@@ -92,19 +92,18 @@
                             }
                         });
                     } else {
-                        self.errors.showAllMessages();
-                        $("#addModalMessage").removeAttr("style");
+                        customerViewModel.errors.showAllMessages();
                     }
-                };
+                },
 
-                self.selectedCustomer = ko.observable();
+                selectedCustomer: ko.observable(),
 
-                self.selectCustomer = function (customer) {
-                    self.selectedCustomer(customer);
-                }
+                deleteCustomerBtn: function (customer) {
+                    customerViewModel.selectedCustomer(customer);
+                },
 
-                self.deleteCustomer = function (customer) {
-                    var id = self.selectedCustomer().id;
+                deleteCustomer: function (customer) {
+                    var id = ko.toJS(customerViewModel.selectedCustomer()).id;
                     $.ajax({
                         url: "/api/customers/" + id,
                         method: "DELETE",
@@ -117,32 +116,38 @@
                             alert(xhr.responseText);
                         }
                     });
-                };
+                },
 
-                self.editCustomerBtn = function (customer) {
-                    self.customer(customer);
-                }
+                editCustomerBtn: function (customer) {
+                    customerViewModel.selectedCustomer(customer);
+                    customerViewModel.name.rules.remove(function (x) { return x.rule === "required" });
+                    customerViewModel.address.rules.remove(function (x) { return x.rule === "required" });
+                },
 
-                self.editCustomer = function () {
-
-                    var editedCustomer = self.customer();
-                    $.ajax({
-                        url: "/api/customers/" + editedCustomer.id,
-                        method: "PUT",
-                        data: ko.toJSON(editedCustomer),
-                        contentType: "application/json",
-                        processData: true,
-                        success: function () {
-                            $("#editCustomerModal").modal("hide");
-                            location.reload(true);
-                        }
-                    });
-
-                };
+                editCustomer: function () {
+                    if (customerViewModel.errors().length === 0) {
+                        var editedCustomer = ko.toJS(customerViewModel.selectedCustomer);
+                        $.ajax({
+                            url: "/api/customers/" + editedCustomer.id,
+                            method: "PUT",
+                            data: ko.toJSON(editedCustomer),
+                            contentType: "application/json",
+                            processData: true,
+                            success: function () {
+                                $("#editCustomerModal").modal("hide");
+                                location.reload(true);
+                            }
+                        });
+                    } else {
+                        customerViewModel.errors.showAllMessages();
+                    }
+                },
             }
 
-            var customerViewModel = new customerViewModel();
+            customerViewModel.errors = ko.validation.group(customerViewModel, { deep: true });
+
             ko.applyBindings(customerViewModel);
+            customerViewModel.getCustomers();
 
         });
 

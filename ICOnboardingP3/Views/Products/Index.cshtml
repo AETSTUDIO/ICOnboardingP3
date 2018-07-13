@@ -25,7 +25,7 @@
                 <td data-bind="text: name"></td>
                 <td data-bind="text: price"></td>
                 <td><button id="editProduct" data-bind="click:$parent.editProductBtn" class="btn btn-warning" type="button" data-toggle="modal" data-target="#editProductModal"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</button></td>
-                <td><button id="deleteProduct" data-bind="click: $parent.selectProduct" class="btn btn-danger" type="button" data-toggle="modal" data-target="#deleteProductModal"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</button></td>
+                <td><button id="deleteProduct" data-bind="click: $parent.deleteProductBtn" class="btn btn-danger" type="button" data-toggle="modal" data-target="#deleteProductModal"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</button></td>
             </tr>
         </tbody>
     </table>
@@ -54,29 +54,32 @@
                 messageTemplate: null
             }, true);
 
-            function productViewModel(id, name, price) {
-                var self = this;
+            function Product(data) {
+                this.id = ko.observable(data.id);
+                this.name = ko.observable(data.name).extend({ required: { message: 'Please Enter New Product Name!' } });
+                this.price = ko.observable(data.price).extend({ required: { message: 'Please Enter New Product Price!' } });
+            }
 
-                self.id = ko.observable(id);
-                self.name = ko.observable(name).extend({ required: { message: 'Please Enter Product Name!' } });
-                self.price = ko.observable(price).extend({ required: { message: 'Please Enter Product Price' } });
-                self.errors = ko.validation.group(self, { deep: true });
+            var productViewModel = {
 
-                var product = {
-                    id: self.id,
-                    name: self.name,
-                    price: self.price
-                };
+                id: ko.observable(),
+                name: ko.observable().extend({ required: { message: 'Please Enter Product Name!' } }),
+                price: ko.observable().extend({ required: { message: 'Please Enter Product Price!' } }),
+                
+                product: ko.observable(),
+                products: ko.observableArray(),
 
-                self.product = ko.observable();
-                self.products = ko.observableArray();
+                getProducts: function () {
+                    $.getJSON("/api/products", function (data) {
+                        $.each(data, function (key, value) {
+                            productViewModel.products.push(new Product(value));
+                        });
+                    });
+                },
+                
 
-                $.getJSON("/api/products", function (data) {
-                    self.products(data);
-                });
-
-                self.addProduct = function () {
-                    if (self.errors().length === 0) {
+                addProduct: function () {
+                    if (productViewModel.errors().length === 0) {
                         var newProduct = ko.toJSON(this);
                         $.ajax({
                             url: "/api/products",
@@ -89,19 +92,18 @@
                             }
                         });
                     } else {
-                        self.errors.showAllMessages();
-                        $("#addModalMessage").removeAttr("style");
+                        productViewModel.errors.showAllMessages();
                     }
-                };
+                },
 
-                self.selectedProduct = ko.observable();
+                selectedProduct: ko.observable(),
 
-                self.selectProduct = function (product) {
-                    self.selectedProduct(product);
-                }
+                deleteProductBtn: function (product) {
+                    productViewModel.selectedProduct(product);
+                },
 
-                self.deleteProduct = function () {
-                    var id = self.selectedProduct().id;
+                deleteProduct: function () {
+                    var id = ko.toJS(productViewModel.selectedProduct()).id;
                     $.ajax({
                         url: "/api/products/" + id,
                         method: "DELETE",
@@ -114,34 +116,41 @@
                             alert(xhr.responseText);
                         }
                     });
-                };
+                },
 
-                self.editProductBtn = function (product) {
-                    self.product(product);
+                editProductBtn: function (product) {
+                    productViewModel.selectedProduct(product);
+                    productViewModel.name.rules.remove(function (x) { return x.rule === "required" });
+                    productViewModel.price.rules.remove(function (x) { return x.rule === "required" });
+                },
+
+                editProduct: function () {
+                    if (productViewModel.errors().length === 0) {
+                        var editedProduct = ko.toJS(productViewModel.selectedProduct);
+                        $.ajax({
+                            url: "/api/products/" + editedProduct.id,
+                            method: "PUT",
+                            data: ko.toJSON(editedProduct),
+                            contentType: "application/json",
+                            processData: true,
+                            success: function () {
+                                $("#editProductModal").modal("hide");
+                                location.reload(true);
+                            },
+                            error: function (xhr) {
+                                alert(xhr.responseText);
+                            }
+                        });
+                    } else {
+                        productViewModel.errors.showAllMessages();
+                    }
                 }
-
-                self.editProduct = function () {
-                    var editedProduct = self.product();
-                    $.ajax({
-                        url: "/api/products/" + editedProduct.id,
-                        method: "PUT",
-                        data: ko.toJSON(editedProduct),
-                        contentType: "application/json",
-                        processData: true,
-                        success: function () {
-                            $("#editProductModal").modal("hide");
-                            location.reload(true);
-                        },
-                        error: function (xhr) {
-                            alert(xhr.responseText);
-                        }
-                    });
-                };
-
             }
 
-            var productViewModel = new productViewModel();
+            productViewModel.errors = ko.validation.group(productViewModel, { deep: true });
+
             ko.applyBindings(productViewModel);
+            productViewModel.getProducts();
         });
 
     </script>

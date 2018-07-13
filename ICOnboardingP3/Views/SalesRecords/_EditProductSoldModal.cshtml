@@ -9,11 +9,11 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form data-bind="with: productSold">
+                <form data-bind="with: selectedProductSold()">
                     <div class="form-group">
                         <label for="NewProductSoldCustomerName"><strong>Customer Name: </strong></label>
                         <select class="form-control" id="NewProductSoldCustomerName" data-bind="
-                                    options: $parent.customerList(),
+                                    options: $parent.customerList,
                                     optionsText: 'name',
                                     optionsValue: 'id',
                                     value: customerId"></select>
@@ -21,7 +21,7 @@
                     <div class="form-group">
                         <label for="newProductSoldProductName"><strong>Product Name: </strong></label>
                         <select class="form-control" id="NewProductSoldProductName" data-bind="
-                                    options: $parent.productList(),
+                                    options: $parent.productList,
                                     optionsText: 'name',
                                     optionsValue: 'id',
                                     value: productId"></select>
@@ -29,14 +29,14 @@
                     <div class="form-group">
                         <label for="newProductSoldStoreName"><strong>Store Name: </strong></label>
                         <select class="form-control" id="NewProductSoldStoreName" data-bind="
-                                    options: $parent.storeList(),
+                                    options: $parent.storeList,
                                     optionsText: 'name',
                                     optionsValue: 'id',
                                     value: storeId"></select>
                     </div>
                     <div class="form-group">
                         <label for="newProductSoldDate"><strong>Date Sold: </strong></label>
-                        <input type="date" data-bind="date: dateSold, dateFormat: 'YYYY-MM-DD', value: dateSold, valueUpdate:'keyup'" class="form-control" id="newProductSoldDate">
+                        <input data-bind="value: dateSold" class="form-control" id="newProductSoldDate">
                     </div>
                 </form>
             </div>

@@ -26,7 +26,7 @@
                 <td data-bind="text: name"></td>
                 <td data-bind="text: address"></td>
                 <td><button id="editStore" data-bind="click:$parent.editStoreBtn" class="btn btn-warning" type="button" data-toggle="modal" data-target="#editStoreModal"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</button></td>
-                <td><button id="deleteStore" data-bind="click: $parent.selectStore" class="btn btn-danger" type="button" data-toggle="modal" data-target="#deleteStoreModal"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</button></td>
+                <td><button id="deleteStore" data-bind="click: $parent.deleteStoreBtn" class="btn btn-danger" type="button" data-toggle="modal" data-target="#deleteStoreModal"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</button></td>
             </tr>
         </tbody>
     </table>
@@ -55,29 +55,33 @@
                 messageTemplate: null
             }, true);
 
-            function storeViewModel() {
-                var self = this;
+            function Store(data) {
+                this.id = ko.observable(data.id);
+                this.name = ko.observable(data.name).extend({ required: { message: 'Please Enter New Store Name!' } });
+                this.address = ko.observable(data.address).extend({ required: { message: 'Please Enter New Store Address!' } });
+            }
 
-                self.id = ko.observable();
-                self.name = ko.observable().extend({ required: { message: 'Please Enter Store Name!' } });
-                self.address = ko.observable().extend({ required: { message: 'Please Enter Store Address!' } });
-                self.errors = ko.validation.group(self, { deep: true });
+            var storeViewModel = {
 
-                var store = {
-                    id: self.id,
-                    name: self.name,
-                    address: self.address
-                }
+                id: ko.observable(),
+                name: ko.observable().extend({ required: { message: 'Please Enter Store Name!' } }),
+                address: ko.observable().extend({ required: { message: 'Please Enter Store Address!' } }),
 
-                self.store = ko.observable();
-                self.stores = ko.observableArray();
 
-                $.getJSON("/api/stores", function (data) {
-                    self.stores(data);
-                });
+                store: ko.observable(),
+                stores: ko.observableArray(),
 
-                self.addStore = function () {
-                    if (self.errors().length === 0) {
+                getStores: function () {
+                    $.getJSON("/api/stores", function (data) {
+                        $.each(data, function (key, value) {
+                            storeViewModel.stores.push(new Store(value));
+                        });
+                    });
+                },
+                
+
+                addStore: function () {
+                    if (storeViewModel.errors().length === 0) {
                         var newStore = ko.toJSON(this);
                         $.ajax({
                             url: "/api/stores",
@@ -90,19 +94,18 @@
                             }
                         });
                     } else {
-                        self.errors.showAllMessages();
-                        $("#addModalMessage").removeAttr("style");
+                        storeViewModel.errors.showAllMessages();
                     }
-                };
+                },
 
-                self.selectedStore = ko.observable();
+                selectedStore: ko.observable(),
 
-                self.selectStore = function (store) {
-                    self.selectedStore(store);
-                }
+                deleteStoreBtn: function (store) {
+                    storeViewModel.selectedStore(store);
+                },
 
-                self.deleteStore = function () {
-                        var id = self.selectedStore().id;
+                deleteStore: function () {
+                        var id = ko.toJS(storeViewModel.selectedStore).id;
                         $.ajax({
                             url: "/api/stores/" + id,
                             method: "DELETE",
@@ -115,33 +118,42 @@
                                 alert(xhr.responseText);
                             }
                         });
-                };
+                },
 
-                self.editStoreBtn = function (store) {
-                    self.store(store);
+                editStoreBtn: function (store) {
+                    storeViewModel.selectedStore(store);
+                    storeViewModel.name.rules.remove(function (x) { return x.rule === "required" });
+                    storeViewModel.address.rules.remove(function (x) { return x.rule === "required" });
+                },
+
+                editStore: function () {
+                    if (storeViewModel.errors().length === 0) {
+                        var editedStore = ko.toJS(storeViewModel.selectedStore);
+                        $.ajax({
+                            url: "/api/stores/" + editedStore.id,
+                            method: "PUT",
+                            data: ko.toJSON(editedStore),
+                            contentType: "application/json",
+                            processData: true,
+                            success: function () {
+                                $("#editStoreModal").modal("hide");
+                                location.reload(true);
+                            },
+                            error: function (xhr) {
+                                alert(xhr.responseText);
+                            }
+                        });
+                    } else {
+                        storeViewModel.errors.showAllMessages();
+                    }
+                    
                 }
-
-                self.editStore = function () {
-                    var editedStore = self.store();
-                    $.ajax({
-                        url: "/api/stores/" + editedStore.id,
-                        method: "PUT",
-                        data: ko.toJSON(editedStore),
-                        contentType: "application/json",
-                        processData: true,
-                        success: function () {
-                            $("#editStoreModal").modal("hide");
-                            location.reload(true);
-                        },
-                        error: function (xhr) {
-                            alert(xhr.responseText);
-                        }
-                    });
-                };
             }
 
-            var storeViewModel = new storeViewModel();
+            storeViewModel.errors = ko.validation.group(storeViewModel, { deep: true });
+
             ko.applyBindings(storeViewModel);
+            storeViewModel.getStores();
         });
 
     </script>
