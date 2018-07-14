@@ -84,6 +84,7 @@
                 productSolds: ko.observableArray(),
 
                 getAllData: function () {
+                    PSViewModel.productSolds.removeAll();
                     $.getJSON("/api/salesrecords", function (data) {
                         $.each(data, function (key, value) {
                             PSViewModel.productSolds.push(ko.toJS(new ProductSold(value)));

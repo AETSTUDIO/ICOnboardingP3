@@ -70,6 +70,7 @@
                 products: ko.observableArray(),
 
                 getProducts: function () {
+                    productViewModel.products.removeAll();
                     $.getJSON("/api/products", function (data) {
                         $.each(data, function (key, value) {
                             productViewModel.products.push(new Product(value));

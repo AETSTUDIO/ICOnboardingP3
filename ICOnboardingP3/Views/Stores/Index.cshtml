@@ -72,6 +72,7 @@
                 stores: ko.observableArray(),
 
                 getStores: function () {
+                    storeViewModel.stores.removeAll();
                     $.getJSON("/api/stores", function (data) {
                         $.each(data, function (key, value) {
                             storeViewModel.stores.push(new Store(value));

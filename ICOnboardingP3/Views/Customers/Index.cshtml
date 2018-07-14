@@ -70,6 +70,7 @@
                 customers: ko.observableArray(),
 
                 getCustomers: function () {
+                    customerViewModel.customers.removeAll();
                     $.getJSON("/api/customers", function (data) {
                         $.each(data, function (key, value) {
                             customerViewModel.customers.push(new Customer(value));
