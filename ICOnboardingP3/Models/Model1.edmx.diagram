@@ -9,7 +9,6 @@
         <EntityTypeShape EntityType="OnboardingP3Model.Product" Width="1.5" PointX="2.75" PointY="5" IsExpanded="true" />
         <EntityTypeShape EntityType="OnboardingP3Model.ProductSold" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
         <EntityTypeShape EntityType="OnboardingP3Model.Store" Width="1.5" PointX="6.625" PointY="2.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="OnboardingP3Model.sysdiagram" Width="1.5" PointX="6.625" PointY="5.125" IsExpanded="true" />
         <AssociationConnector Association="OnboardingP3Model.FK__ProductSo__Custo__4F7CD00D" ManuallyRouted="false" />
         <AssociationConnector Association="OnboardingP3Model.FK__ProductSo__Produ__5070F446" ManuallyRouted="false" />
         <AssociationConnector Association="OnboardingP3Model.FK__ProductSo__Store__5165187F" ManuallyRouted="false" />

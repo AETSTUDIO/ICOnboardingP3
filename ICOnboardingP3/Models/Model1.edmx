@@ -143,16 +143,6 @@
           <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="ProductSolds" Relationship="Self.FK__ProductSo__Store__5165187F" FromRole="Stores" ToRole="ProductSolds" />
         </EntityType>
-        <EntityType Name="sysdiagram">
-          <Key>
-            <PropertyRef Name="diagram_id" />
-          </Key>
-          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="principal_id" Type="Int32" Nullable="false" />
-          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="version" Type="Int32" />
-          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
-        </EntityType>
         <Association Name="FK__ProductSo__Custo__4F7CD00D">
           <End Role="Customers" Type="Self.Customer" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
@@ -200,7 +190,6 @@
           <EntitySet Name="Products" EntityType="Self.Product" />
           <EntitySet Name="ProductSolds" EntityType="Self.ProductSold" />
           <EntitySet Name="Stores" EntityType="Self.Store" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
           <AssociationSet Name="FK__ProductSo__Custo__4F7CD00D" Association="Self.FK__ProductSo__Custo__4F7CD00D">
             <End Role="Customers" EntitySet="Customers" />
             <End Role="ProductSolds" EntitySet="ProductSolds" />

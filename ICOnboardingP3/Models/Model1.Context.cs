@@ -29,6 +29,5 @@ namespace ICOnboardingP3.Models
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<ProductSold> ProductSolds { get; set; }
         public virtual DbSet<Store> Stores { get; set; }
-        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
     }
 }
