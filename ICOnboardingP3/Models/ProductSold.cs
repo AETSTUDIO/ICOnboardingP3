@@ -11,21 +11,13 @@ namespace ICOnboardingP3.Models
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
     
     public partial class ProductSold
     {
         public int Id { get; set; }
-
-        [Required]
-        [Display(Name = "Date Sold")]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public System.DateTime DateSold { get; set; }
-
         public Nullable<int> CustomerId { get; set; }
-
         public Nullable<int> ProductId { get; set; }
-
         public Nullable<int> StoreId { get; set; }
     
         public virtual Customer Customer { get; set; }

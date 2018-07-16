@@ -11,7 +11,6 @@ namespace ICOnboardingP3.Models
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
     
     public partial class Customer
     {
@@ -22,13 +21,7 @@ namespace ICOnboardingP3.Models
         }
     
         public int Id { get; set; }
-
-        [Required]
-        [StringLength(255)]
         public string Name { get; set; }
-
-        [Required]
-        [StringLength(255)]
         public string Address { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
